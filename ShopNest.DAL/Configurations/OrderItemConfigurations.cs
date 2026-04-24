@@ -17,6 +17,9 @@ namespace ShopNest.DAL.Configurations
             builder.Property(oi => oi.Quantity)
                 .IsRequired();
 
+            builder.HasIndex(oi => new { oi.OrderId, oi.ProductId })
+                .IsUnique();
+
             builder.Property(oi => oi.UnitPrice)
                 .IsRequired()
                 .HasPrecision(18, 2);

@@ -36,6 +36,24 @@ namespace ShopNest.DAL.Configurations
                     .IsRequired()
                     .HasDefaultValueSql("GETUTCDATE()");
 
+            builder.Property(p => p.Author)
+                .HasMaxLength(200);
+
+            builder.Property(p => p.Publisher)
+                .HasMaxLength(200);
+
+            builder.Property(p => p.ISBN)
+                .HasMaxLength(20);
+
+            builder.HasIndex(p => p.ISBN)
+                .IsUnique();
+
+            builder.Property(p => p.Language)
+                .HasMaxLength(50);
+
+            builder.Property(p => p.Edition)
+                .HasMaxLength(50);
+
 
             builder.HasMany(p => p.Images)
                 .WithOne(m => m.Product)

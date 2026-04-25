@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ShpoNest.Models.Enums;
 
 namespace ShpoNest.Models.Entities
 {
@@ -13,6 +11,16 @@ namespace ShpoNest.Models.Entities
         public int Stock { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        //Book Space
+        public string? Author { get; set; }
+        public string? Publisher { get; set; }
+        public string? ISBN { get; set; }
+        public int? PublicationYear { get; set; }
+        public int? Pages { get; set; }
+        public string? Language { get; set; }
+        public string? Edition { get; set; }
+        public BookFormat? Format { get; set; }
 
 
         //Fk

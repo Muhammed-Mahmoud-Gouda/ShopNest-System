@@ -1,6 +1,9 @@
-﻿namespace ShopNest.DAL.Repositories.Interfaces
+﻿using ShpoNest.Models.Entities;
+
+namespace ShopNest.DAL.Repositories.Interfaces
 {
-    public interface IProductImageRepository
+    public interface IProductImageRepository : IGenericRepository<ProductImages>
     {
+
     }
 }

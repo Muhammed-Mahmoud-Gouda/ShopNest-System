@@ -1,6 +1,8 @@
-﻿namespace ShopNest.DAL.Repositories.Interfaces
+﻿using ShpoNest.Models.Entities;
+
+namespace ShopNest.DAL.Repositories.Interfaces
 {
-    public interface ICustomerRepository
+    public interface ICustomerRepository :IGenericRepository<Customer>
     {
     }
 }

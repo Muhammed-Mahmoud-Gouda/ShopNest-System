@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ShopNest.DAL\BookStore.DAL.csproj" />
-    <ProjectReference Include="..\ShpoNest.Models\BookStore.Models.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="DTOs\" />
     <Folder Include="Services\" />
     <Folder Include="Interfaces\" />
@@ -19,6 +14,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BookStore.DAL\BookStore.DAL.csproj" />
+    <ProjectReference Include="..\BookStore.Models\BookStore.Models.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,8 +9,6 @@ public class UnitOfWork : IUnitOfWork
 {
     
     private readonly AppDbContext _context;
-    private readonly ILogger<UnitOfWork> _logger;
-    
 
     public ICategoryRepository Categories { get; }
     public IProductRepository Products { get; }
@@ -20,11 +18,9 @@ public class UnitOfWork : IUnitOfWork
     public IOrderRepository Orders { get; }
     public IOrderItemRepository OrderItems { get; }
 
-    public UnitOfWork(AppDbContext context, ILogger<UnitOfWork> logger)
+    public UnitOfWork(AppDbContext context)
     {
         _context = context;
-        _logger = logger;
-        
         Categories = new CategoryRepository(context);
         Products = new ProductRepository(context);
         ProductImages = new ProductImageRepository(context);
@@ -35,27 +31,7 @@ public class UnitOfWork : IUnitOfWork
     }
 
     public async Task<int> SaveChangesAsync()
-    {
-        // Begin an explicit transaction
-        await using var transaction = await _context.Database.BeginTransactionAsync();
-
-        try
-        {
-            // Your pending changes (e.g., _context.Categories.Add(), .Update(), etc.)
-            // Note: Your original line `var tr = _context.Categories=` was incomplete.
-            // Place any entity operations BEFORE SaveChangesAsync() here.
-
-            var result = await _context.SaveChangesAsync();
-
-            await transaction.CommitAsync();
-            return result;
-        }
-        catch
-        {
-            await transaction.RollbackAsync();
-            throw; // Preserves the original stack trace
-        }
-    }
+     => await _context.SaveChangesAsync();
 
     public void Dispose()
     {

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 using ShopNest.DAL.ApplicationDbContext;
 using ShopNest.DAL.Repositories.Interfaces;
 using System.Runtime.CompilerServices;
@@ -32,6 +33,9 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task<int> SaveChangesAsync()
      => await _context.SaveChangesAsync();
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    => await _context.Database.BeginTransactionAsync();
 
     public void Dispose()
     {

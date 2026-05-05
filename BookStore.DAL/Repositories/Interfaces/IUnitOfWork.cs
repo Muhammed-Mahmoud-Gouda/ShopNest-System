@@ -1,4 +1,6 @@
-﻿namespace ShopNest.DAL.Repositories.Interfaces
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace ShopNest.DAL.Repositories.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
@@ -11,6 +13,7 @@
         IOrderItemRepository OrderItems { get; }
 
         Task<int> SaveChangesAsync();
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 
 }

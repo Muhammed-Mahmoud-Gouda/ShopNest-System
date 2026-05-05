@@ -3,6 +3,7 @@ using ShopNest.BLL.Services.Interfaces;
 using ShopNest.DAL.Repositories.Interfaces;
 using ShpoNest.Models.Entities;
 using ShpoNest.Models.Enums;
+using System.Text;
 
 namespace ShopNest.BLL.Services.Implementations
 {
@@ -199,5 +200,23 @@ namespace ShopNest.BLL.Services.Implementations
                     }).ToList() ?? new(),
             };
         }
+
+        private static bool isValid(OrderCreateDto orderCreateDto)
+        {
+            if (orderCreateDto.Notes is not null)
+            {
+                StringBuilder builder = new(orderCreateDto.Notes?.Trim());
+
+                if (builder is not null)
+                {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+
     }
 }

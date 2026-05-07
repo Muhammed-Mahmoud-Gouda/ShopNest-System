@@ -1,3 +1,4 @@
+using BookStore.BLL.Common;
 using Microsoft.EntityFrameworkCore;
 using ShopNest.DAL.ApplicationDbContext;
 
@@ -18,6 +19,8 @@ namespace ShopNest.Web
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(connectionString));
+
+            builder.Services.AddApplicationServices();
 
             builder.Services.AddControllersWithViews();
 

@@ -11,5 +11,6 @@ namespace ShopNest.BLL.Services.Interfaces
         Task UpdateAsync(CategoryUpdateDto dto);
         Task DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
+        Task<IEnumerable<CategoryResultDto>> SearchAsync(string searchTerm);
     }
 }

@@ -93,7 +93,14 @@ namespace ShopNest.BLL.Services.Implementations
         public async Task<bool> ExistsAsync(int id)
             => await _unitOfWork.Categories.ExistsAsync(id);
 
-        
+        public async Task<IEnumerable<CategoryResultDto>> SearchAsync(string searchTerm)
+        {
+            var categories = await _unitOfWork.Categories.GetAllWithProductsAsync();
+            return categories
+                .Where(c => c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .Select(c => MapToResultDto(c));
+        }
+
         private static CategoryResultDto MapToResultDto(Category category)
         {
             return new CategoryResultDto

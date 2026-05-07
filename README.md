@@ -18,7 +18,7 @@
 
 ## 📌 Overview
 
-BookStore is a full-featured e-commerce platform specialized in technical and programming books. Built with **ASP.NET Core MVC 8.0**, it follows clean architecture principles to ensure scalability, maintainability, and separation of concerns.
+BookStore is a full-featured e-commerce platform specialized in technical and programming books. Built with **ASP.NET Core MVC 10.0**, it follows clean architecture principles to ensure scalability, maintainability, and separation of concerns.
 
 ---
 

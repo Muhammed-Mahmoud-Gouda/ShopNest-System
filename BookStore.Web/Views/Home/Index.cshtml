@@ -1,4 +1,4 @@
-﻿@using ShopNest.BLL.DTOs.Product
+﻿@* @using ShopNest.BLL.DTOs.Product
 @using ShopNest.BLL.DTOs.Category
 @{
     ViewData["Title"] = "Welcome to ShopNest - Your Tech Knowledge Hub";
@@ -171,4 +171,548 @@
             });
         });
     </script>
+}
+ *@
+
+@using ShopNest.BLL.DTOs.Product
+@using ShopNest.BLL.DTOs.Category
+@{
+    ViewData["Title"] = "Welcome to ShopNest - Your Tech Knowledge Hub";
+    
+    var featuredBooks = ViewBag.FeaturedBooks as List<ProductResultDto> ?? new List<ProductResultDto>();
+    var newArrivals = ViewBag.NewArrivals as List<ProductResultDto> ?? new List<ProductResultDto>();
+    var categories = ViewBag.Categories as List<CategoryResultDto> ?? new List<CategoryResultDto>();
+    var totalBooks = ViewBag.TotalBooks ?? 0;
+    var totalCustomers = ViewBag.TotalCustomers ?? 12000;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" />
+}
+
+<!-- ══ HERO SECTION ══ -->
+<section class="hero-section">
+    <div class="hero-bg-overlay"></div>
+    <div class="hero-gradient"></div>
+    <div class="hero-container">
+        <div class="hero-content" data-aos="fade-right">
+            <div class="hero-eyebrow">
+                <span class="eyebrow-text">★ Egypt's Premier Tech Library</span>
+            </div>
+            <h1>Empowering Developers<br>Through <em>Great Books</em></h1>
+            <p class="hero-description">
+                Join <strong>@totalCustomers+</strong> developers in Egypt. From System Design to Artificial Intelligence, 
+                we curate the highest quality technical literature to help you build the future.
+            </p>
+            <div class="hero-btns">
+                <a href="@Url.Action("Index", "Shop")" class="btn-gold">
+                    <i class="fas fa-book-open"></i> Explore All Books
+                </a>
+                <a href="#new-arrivals" class="btn-outline-white">
+                    <i class="fas fa-sparkles"></i> New Arrivals
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <span class="num">@totalBooks+</span>
+                    <span class="label">Tech Titles</span>
+                </div>
+                <div class="stat-box">
+                    <span class="num">24h</span>
+                    <span class="label">Cairo Delivery</span>
+                </div>
+                <div class="stat-box">
+                    <span class="num">4.9/5</span>
+                    <span class="label">Trust Score</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual d-none d-lg-block" data-aos="fade-left">
+            <div class="hero-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=1000" 
+                     alt="Featured Tech Books" 
+                     class="hero-main-image"
+                     loading="eager">
+                <div class="floating-badge">
+                    <i class="fas fa-check-circle"></i> Verified Quality
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-scroll-indicator">
+        <a href="#categories" class="scroll-link">
+            <span>Explore</span>
+            <i class="fas fa-chevron-down"></i>
+        </a>
+    </div>
+</section>
+
+<!-- ══ POPULAR CATEGORIES (Carousel - 4 Cards) ══ -->
+<section id="categories" class="section-padding bg-cream">
+    <div class="container-xl">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <span class="subtitle">Browse by Interest</span>
+                <h2>Popular Categories</h2>
+            </div>
+            <a href="@Url.Action("Index", "Shop")" class="view-all-link">
+                View All Categories <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        @if (categories.Any())
+        {
+            <div class="category-carousel-wrapper justify-content-center">
+                <!-- Navigation Buttons -->
+                <button class="carousel-nav prev-btn" id="catPrev" aria-label="Previous categories" type="button">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="category-carousel-track" id="categoryTrack">
+                    @foreach (var cat in categories)
+                    {
+                        <a href="@Url.Action("Index", "Shop", new { categoryId = cat.Id })" class="cat-card-compact" data-aos="fade-up">
+                            <div class="cat-img-wrap">
+                                <img src="@(string.IsNullOrEmpty(cat.ImagePath) 
+                                    ? "https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&w=400" 
+                                    : cat.ImagePath)" 
+                                     alt="@cat.Name" 
+                                     loading="lazy"
+                                     onerror="this.src='https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&w=400'">
+                                <div class="cat-overlay"></div>
+                            </div>
+                            <div class="cat-info">
+                                <h4>@cat.Name</h4>
+                                <span class="cat-count">@cat.ProductsCount Books</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+                
+                <button class="carousel-nav next-btn" id="catNext" aria-label="Next categories" type="button">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- Dots Indicator (only if more than 4 categories) -->
+            @if (categories.Count > 4)
+            {
+                <div class="carousel-dots" id="categoryDots">
+                    @for (int i = 0; i < Math.Ceiling((double)categories.Count / 4); i++)
+                    {
+                        <button class="dot @(i == 0 ? "active" : "")" data-index="@i" aria-label="Go to slide @(i+1)" type="button"></button>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <p>No categories available yet. Check back soon!</p>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- ══ FEATURED BOOKS ══ -->
+<section class="section-padding">
+    <div class="container-xl">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <span class="subtitle">Curated For You</span>
+                <h2>Featured Books</h2>
+            </div>
+            <a href="@Url.Action("Index", "Shop")" class="view-all-link">
+                View All Books <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        @if (featuredBooks.Any())
+        {
+            <div class="books-grid">
+                @foreach (var book in featuredBooks)
+                {
+                    <div class="book-card" data-aos="fade-up">
+                        <div class="book-cover-wrap">
+                            <span class="book-badge featured">Featured</span>
+                            <img src="@(string.IsNullOrEmpty(book.MainImagePath) 
+                                ? "/images/default-book.png" 
+                                : book.MainImagePath)" 
+                                 alt="@book.Name"
+                                 loading="lazy"
+                                 onerror="this.src='/images/default-book.png'">
+                            <div class="book-actions">
+                                <a href="@Url.Action("Details", "Shop", new { id = book.Id })" class="action-btn view-btn" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button class="action-btn cart-btn" title="Add to Cart" data-book-id="@book.Id">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="book-meta">@book.CategoryName</div>
+                        <h3 class="book-name">@book.Name</h3>
+                        <p class="book-author">by @(book.Author ?? "Unknown Author")</p>
+                        <div class="book-footer">
+                            <span class="book-price">EGP @book.Price.ToString("N0")</span>
+                            <div class="book-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-book"></i>
+                <p>No featured books available yet.</p>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- ══ CUSTOMER REVIEWS (استبدال قسم Stay Updated) ══ -->
+<section class="section-padding bg-cream">
+    <div class="container-xl">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <span class="subtitle">What Our Customers Say</span>
+                <h2>Customer Reviews</h2>
+            </div>
+            <a href="#" class="view-all-link">
+                View All Reviews <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="reviews-grid">
+            <!-- Review Card 1 -->
+            <div class="review-card" data-aos="fade-up">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="review-meta">
+                        <h4>Ahmed Hassan</h4>
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>5.0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-content">
+                    <p>"The quality of books on ShopNest is exceptional! I've been using their platform for over a year and have never been disappointed. The delivery is always on time and the customer service is top-notch."</p>
+                </div>
+                <div class="review-footer">
+                    <span class="review-date">2 weeks ago</span>
+                    <span class="review-location">Cairo, Egypt</span>
+                </div>
+            </div>
+
+            <!-- Review Card 2 -->
+            <div class="review-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="review-meta">
+                        <h4>Leila Mohamed</h4>
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>4.8</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-content">
+                    <p>"I love how ShopNest curates only the best technical books. Their Python and AI sections are particularly impressive. The search functionality makes it easy to find exactly what I need for my projects."</p>
+                </div>
+                <div class="review-footer">
+                    <span class="review-date">1 month ago</span>
+                    <span class="review-location">Alexandria, Egypt</span>
+                </div>
+            </div>
+
+            <!-- Review Card 3 -->
+            <div class="review-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="review-meta">
+                        <h4>Omar Fawzy</h4>
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>5.0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-content">
+                    <p>"As a developer, I've found ShopNest to be an invaluable resource. The books are well-organized by category and difficulty level. The 24-hour delivery service in Cairo is a game-changer for urgent projects."</p>
+                </div>
+                <div class="review-footer">
+                    <span class="review-date">3 weeks ago</span>
+                    <span class="review-location">Giza, Egypt</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="reviews-cta text-center mt-5">
+            <h3>Ready to Join Our Community of Developers?</h3>
+            <p class="review-cta-text">Join thousands of developers who trust ShopNest for their technical book needs</p>
+            <a href="@Url.Action("Index", "Shop")" class="btn-gold">Explore Our Collection <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ══ NEW ARRIVALS ══ -->
+<section id="new-arrivals" class="section-padding bg-cream">
+    <div class="container-xl">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <span class="subtitle">Fresh Knowledge</span>
+                <h2>New Arrivals</h2>
+            </div>
+            <a href="@Url.Action("Index", "Shop")" class="view-all-link">
+                View All Books <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        @if (newArrivals.Any())
+        {
+            <div class="books-grid">
+                @foreach (var book in newArrivals)
+                {
+                    <div class="book-card" data-aos="fade-up">
+                        <div class="book-cover-wrap">
+                            <span class="book-badge new">New</span>
+                            <img src="@(string.IsNullOrEmpty(book.MainImagePath) 
+                                ? "/images/default-book.png" 
+                                : book.MainImagePath)" 
+                                 alt="@book.Name"
+                                 loading="lazy"
+                                 onerror="this.src='/images/default-book.png'">
+                            <div class="book-actions">
+                                <a href="@Url.Action("Details", "Shop", new { id = book.Id })" class="action-btn view-btn" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button class="action-btn cart-btn" title="Add to Cart" data-book-id="@book.Id">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="book-meta">@book.CategoryName</div>
+                        <h3 class="book-name">@book.Name</h3>
+                        <p class="book-author">by @(book.Author ?? "Unknown Author")</p>
+                        <div class="book-footer">
+                            <span class="book-price">EGP @book.Price.ToString("N0")</span>
+                            <div class="book-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <p>No new arrivals yet. Stay tuned!</p>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ══ Category Carousel Logic ══
+            const track = document.getElementById('categoryTrack');
+            const prevBtn = document.getElementById('catPrev');
+            const nextBtn = document.getElementById('catNext');
+            const dots = document.querySelectorAll('#categoryDots .dot');
+            
+            if (track) {
+                const cards = track.querySelectorAll('.cat-card-compact');
+                let cardsPerView = getCardsPerView();
+                let totalSlides = Math.ceil(cards.length / cardsPerView);
+                let currentSlide = 0;
+                
+                function getCardsPerView() {
+                    if (window.innerWidth <= 480) return 1;
+                    if (window.innerWidth <= 768) return 2;
+                    if (window.innerWidth <= 1200) return 3;
+                    return 4;
+                }
+                
+                function getCardWidth() {
+                    const card = cards[0];
+                    if (!card) return 0;
+                    const style = window.getComputedStyle(track);
+                    const gap = parseFloat(style.gap) || 16;
+                    return card.offsetWidth + gap;
+                }
+                
+                function updateCarousel() {
+                    cardsPerView = getCardsPerView();
+                    totalSlides = Math.ceil(cards.length / cardsPerView);
+                    if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+                    if (currentSlide < 0) currentSlide = 0;
+                    
+                    const scrollPos = currentSlide * getCardWidth() * cardsPerView;
+                    track.scrollTo({ left: scrollPos, behavior: 'smooth' });
+                    
+                    // Update dots
+                    dots.forEach((dot, idx) => {
+                        dot.classList.toggle('active', idx === currentSlide);
+                    });
+                    
+                    // Update buttons
+                    if (prevBtn) prevBtn.disabled = currentSlide === 0;
+                    if (nextBtn) nextBtn.disabled = currentSlide >= totalSlides - 1;
+                }
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        if (currentSlide > 0) { currentSlide--; updateCarousel(); }
+                    });
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        if (currentSlide < totalSlides - 1) { currentSlide++; updateCarousel(); }
+                    });
+                }
+                
+                // Dot navigation
+                dots.forEach(dot => {
+                    dot.addEventListener('click', (e) => {
+                        currentSlide = parseInt(e.currentTarget.dataset.index);
+                        updateCarousel();
+                    });
+                });
+                
+                // Resize handler
+                let resizeTimer;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(updateCarousel, 250);
+                });
+                
+                // Touch swipe
+                let startX = 0;
+                track.addEventListener('touchstart', e => startX = e.touches[0].clientX, { passive: true });
+                track.addEventListener('touchend', e => {
+                    const diff = startX - e.changedTouches[0].clientX;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0 && currentSlide < totalSlides - 1) { currentSlide++; }
+                        else if (diff < 0 && currentSlide > 0) { currentSlide--; }
+                        updateCarousel();
+                    }
+                }, { passive: true });
+                
+                // Initialize
+                updateCarousel();
+            }
+            
+            // ══ Add to Cart Animation ══
+            document.querySelectorAll('.cart-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const bookId = this.dataset.bookId;
+                    this.classList.add('clicked');
+                    setTimeout(() => this.classList.remove('clicked'), 300);
+                    
+                    // Show toast notification
+                    showToast('Added to cart successfully! 🛒');
+                });
+            });
+            
+            // ══ Smooth Scroll for Anchor Links ══
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+            
+            // ══ Toast Notification Helper ══
+            function showToast(message) {
+                let toast = document.getElementById('toast-notification');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'toast-notification';
+                    toast.className = 'toast-notification';
+                    document.body.appendChild(toast);
+                }
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+            
+            // ══ Intersection Observer for AOS-like animations ══
+            const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('aos-animate');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('[data-aos]').forEach(el => {
+                el.classList.add('aos-init');
+                observer.observe(el);
+            });
+        });
+    </script>
+    
+    <!-- Toast Styles -->
+    <style>
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--primary-dark);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            font-weight: 500;
+            z-index: 9999;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        .toast-notification.show {
+            transform: translateX(0);
+        }
+        .cart-btn.clicked {
+            animation: pulse 0.3s ease;
+        }
+        @@keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+    </style>
 }

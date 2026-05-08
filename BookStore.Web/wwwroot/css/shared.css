@@ -214,7 +214,7 @@ ul {
 /* ═══ Main Content Wrapper ════════════════════════════ */
 .main-content {
     min-height: calc(100vh - var(--nav-height) - 400px);
-    padding: 2rem 5%;
+    padding: 0;
 }
 
 /* ═══ Footer ══════════════════════════════════════════ */

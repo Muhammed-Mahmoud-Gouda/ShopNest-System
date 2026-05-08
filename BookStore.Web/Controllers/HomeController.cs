@@ -8,7 +8,9 @@ namespace ShopNest.Web.Controllers
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
 
-        public HomeController(IProductService productService, ICategoryService categoryService)
+        public HomeController(
+            IProductService productService,
+            ICategoryService categoryService)
         {
             _productService = productService;
             _categoryService = categoryService;
@@ -16,10 +18,27 @@ namespace ShopNest.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var bestsellers = (await _productService.GetActiveAsync())
-                .Take(5);
+            var allProducts = await _productService.GetAllWithCategoryAsync();
+            var categories = await _categoryService.GetAllAsync();
 
-            ViewBag.Bestsellers = bestsellers;
+            ViewBag.FeaturedBooks = allProducts
+                .Where(p => p.IsActive)
+                .Take(4)
+                .ToList();
+
+            ViewBag.NewArrivals = allProducts
+                .Where(p => p.IsActive)
+                .OrderByDescending(p => p.Id)
+                .Take(4)
+                .ToList();
+
+            ViewBag.Categories = categories
+                .Where(c => c.IsActive)
+                .ToList();
+
+            ViewBag.TotalBooks = allProducts.Count();
+            ViewBag.TotalCustomers = 12000;
+
             return View();
         }
     }

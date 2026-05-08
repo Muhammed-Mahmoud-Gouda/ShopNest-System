@@ -1,8 +1,174 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using ShopNest.BLL.DTOs.Product
+@using ShopNest.BLL.DTOs.Category
+@{
+    ViewData["Title"] = "Welcome to ShopNest - Your Tech Knowledge Hub";
+    
+    var featuredBooks = ViewBag.FeaturedBooks as List<ProductResultDto> ?? new List<ProductResultDto>();
+    var newArrivals = ViewBag.NewArrivals as List<ProductResultDto> ?? new List<ProductResultDto>();
+    var categories = ViewBag.Categories as List<CategoryResultDto> ?? new List<CategoryResultDto>();
+    var totalBooks = ViewBag.TotalBooks ?? 0;
+    var totalCustomers = ViewBag.TotalCustomers ?? 12000;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" />
+}
+
+<!-- ══ HERO SECTION ══ -->
+<section class="hero-section">
+    <div class="hero-bg-overlay"></div>
+    <div class="hero-gradient"></div>
+    <div class="hero-container">
+        <div class="hero-content">
+            <div class="hero-eyebrow" style="background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; display: inline-block; margin-bottom: 1rem;">
+                <span style="color: var(--accent-gold); font-weight: 700;">★ Egypt's Premier Tech Library</span>
+            </div>
+            <h1>Empowering Developers<br>Through <em>Great Books</em></h1>
+            <p class="hero-description">
+                Join @totalCustomers+ developers in Egypt. From System Design to Artificial Intelligence, 
+                we curate the highest quality technical literature to help you build the future.
+            </p>
+            <div class="hero-btns">
+                <a href="@Url.Action("Index", "Shop")" class="btn-gold">Explore All Books</a>
+                <a href="#new-arrivals" class="btn-outline-white">New Arrivals</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <span class="num">@totalBooks+</span>
+                    <span class="label">Tech Titles</span>
+                </div>
+                <div class="stat-box">
+                    <span class="num">24h</span>
+                    <span class="label">Cairo Delivery</span>
+                </div>
+                <div class="stat-box">
+                    <span class="num">4.9/5</span>
+                    <span class="label">Trust Score</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual d-none d-lg-block">
+            <!-- Professional book stack or featured image -->
+            <img src="https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=1000" alt="Featured Tech Books" style="width: 100%; border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);">
+        </div>
+    </div>
+</section>
+
+<!-- ══ POPULAR CATEGORIES ══ -->
+<section class="section-padding" style="background: var(--bg-cream);">
+    <div class="container-xl">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <span class="subtitle">Browse by Interest</span>
+                <h2>Popular Categories</h2>
+            </div>
+            <a href="@Url.Action("Index", "Shop")" style="color: var(--primary-mid); font-weight: 700;">View All Categories <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="category-grid">
+            @foreach (var cat in categories)
+            {
+                <a href="@Url.Action("Index", "Shop", new { categoryId = cat.Id })" class="cat-card">
+                    <img src="@(string.IsNullOrEmpty(cat.ImagePath) ? "https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&w=600" : cat.ImagePath)" alt="@cat.Name">
+                    <div class="cat-card-content">
+                        <h4>@cat.Name</h4>
+                        <span>@cat.ProductsCount Books</span>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ══ FEATURED BOOKS ══ -->
+<section class="section-padding">
+    <div class="container-xl">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <span class="subtitle">Curated For You</span>
+                <h2>Featured Books</h2>
+            </div>
+        </div>
+
+        <div class="books-grid">
+            @foreach (var book in featuredBooks)
+            {
+                <div class="book-card">
+                    <div class="book-cover-wrap">
+                        <span class="book-badge">Featured</span>
+                        <img src="@(string.IsNullOrEmpty(book.MainImagePath) ? "/images/default-book.png" : book.MainImagePath)" alt="@book.Name">
+                    </div>
+                    <div class="book-meta">@book.CategoryName</div>
+                    <h3 class="book-name">@book.Name</h3>
+                    <p class="book-author">by @(book.Author ?? "Unknown Author")</p>
+                    <div class="book-footer">
+                        <span class="book-price">EGP @book.Price.ToString("N0")</span>
+                        <a href="#" class="add-cart-btn" title="Add to Cart">
+                            <i class="fas fa-cart-plus"></i>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ══ FEATURE BANNER ══ -->
+<div class="container-xl">
+    <div class="feature-banner">
+        <div class="feature-text">
+            <h3>Start Your Learning<br>Journey Today</h3>
+            <p>Every expert was once a beginner. Our collection covers everything from basic syntax to advanced architectural patterns. Get your books delivered within 24-48 hours anywhere in Egypt.</p>
+            <a href="@Url.Action("Index", "Shop")" class="btn-gold">Start Shopping Now</a>
+        </div>
+        <div class="feature-img d-none d-lg-block">
+            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=800" alt="Tech Reading" style="width: 100%; border-radius: 20px;">
+        </div>
+    </div>
 </div>
+
+<!-- ══ NEW ARRIVALS ══ -->
+<section id="new-arrivals" class="section-padding">
+    <div class="container-xl">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <span class="subtitle">Fresh Knowledge</span>
+                <h2>New Arrivals</h2>
+            </div>
+        </div>
+
+        <div class="books-grid">
+            @foreach (var book in newArrivals)
+            {
+                <div class="book-card">
+                    <div class="book-cover-wrap">
+                        <img src="@(string.IsNullOrEmpty(book.MainImagePath) ? "/images/default-book.png" : book.MainImagePath)" alt="@book.Name">
+                    </div>
+                    <div class="book-meta">@book.CategoryName</div>
+                    <h3 class="book-name">@book.Name</h3>
+                    <p class="book-author">by @(book.Author ?? "Unknown Author")</p>
+                    <div class="book-footer">
+                        <span class="book-price">EGP @book.Price.ToString("N0")</span>
+                        <a href="#" class="add-cart-btn">
+                            <i class="fas fa-cart-plus"></i>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Optional: Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+}
